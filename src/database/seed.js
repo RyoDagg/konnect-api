@@ -31,88 +31,17 @@ const seedDB = async () => {
     const wallet2 = await Wallet.create({ balance: 1657.42, UserId: user2.id });
 
     // Generate transactions (Alice sends to Bob, Bob sends to Alice)
-    const transactions = [
-      {
-        type: 'send',
-        amount: 100,
-        status: 'completed',
-        senderId: user1.id,
-        receiverId: user2.id,
-        WalletId: wallet1.id,
-      },
-      {
-        type: 'send',
-        amount: 200,
-        status: 'completed',
-        senderId: user2.id,
-        receiverId: user1.id,
-        WalletId: wallet2.id,
-      },
-      {
-        type: 'send',
-        amount: 50,
-        status: 'completed',
-        senderId: user1.id,
-        receiverId: user2.id,
-        WalletId: wallet1.id,
-      },
-      {
-        type: 'request',
-        amount: 300,
-        status: 'pending',
-        senderId: user2.id,
-        receiverId: user1.id,
-        WalletId: wallet2.id,
-      },
-      {
-        type: 'send',
-        amount: 75,
-        status: 'completed',
-        senderId: user1.id,
-        receiverId: user2.id,
-        WalletId: wallet1.id,
-      },
-      {
-        type: 'send',
-        amount: 150,
-        status: 'completed',
-        senderId: user2.id,
-        receiverId: user1.id,
-        WalletId: wallet2.id,
-      },
-      {
-        type: 'send',
-        amount: 250,
-        status: 'completed',
-        senderId: user1.id,
-        receiverId: user2.id,
-        WalletId: wallet1.id,
-      },
-      {
-        type: 'request',
-        amount: 400,
-        status: 'pending',
-        senderId: user1.id,
-        receiverId: user2.id,
-        WalletId: wallet1.id,
-      },
-      {
-        type: 'send',
-        amount: 125,
-        status: 'completed',
-        senderId: user2.id,
-        receiverId: user1.id,
-        WalletId: wallet2.id,
-      },
-      {
-        type: 'send',
-        amount: 175,
-        status: 'completed',
-        senderId: user1.id,
-        receiverId: user2.id,
-        WalletId: wallet1.id,
-      },
-    ];
+    const transactions = [];
+    for (let i = 0; i < 200; i++) {
+      transactions.push({
+        type: i % 2 === 0 ? 'send' : 'request',
+        amount: Math.floor(Math.random() * 500) + 1,
+        status: i % 3 === 0 ? 'completed' : 'pending',
+        senderId: i % 2 === 0 ? user1.id : user2.id,
+        receiverId: i % 2 === 0 ? user2.id : user1.id,
+        WalletId: i % 2 === 0 ? wallet1.id : wallet2.id,
+      });
+    }
 
     await Transaction.bulkCreate(transactions);
 
