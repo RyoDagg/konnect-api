@@ -9,10 +9,13 @@ router.get(
   async (req, res) => {
     try {
       const wallet = await Wallet.findOne({ where: { UserId: req.user.id } });
-      if (!wallet) return res.status(404).json({ error: 'Wallet not found' });
-      res.json(wallet);
+
+      if (!wallet)
+        return res.status(404).send({ ok: false, error: 'Wallet not found' });
+
+      res.send({ ok: true, data: wallet });
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).send({ ok: false, error: err.message });
     }
   }
 );
