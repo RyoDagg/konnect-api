@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
 const User = require('../models/user');
 
@@ -39,5 +40,21 @@ router.post('/login', async (req, res) => {
     res.status(500).send({ ok: false, error: err.message });
   }
 });
+
+router.get(
+  '/me',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const user = await User.findByPk(req.user.id);
+      if (!user) {
+        return res.status(404).send({ ok: false, error: 'User not found' });
+      }
+      res.send({ ok: true, user });
+    } catch (err) {
+      res.status(500).send({ ok: false, error: err.message });
+    }
+  }
+);
 
 module.exports = router;
