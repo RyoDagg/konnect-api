@@ -46,7 +46,7 @@ app.get('/', (req, res) => {
 
 app.use('/user', require('./controllers/user'));
 app.use('/wallet', require('./controllers/wallet'));
-app.use('/transactions', require('./controllers/transaction'));
+app.use('/transaction', require('./controllers/transaction'));
 
 // Sync Database & Start Server
 sequelize
