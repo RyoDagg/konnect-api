@@ -27,8 +27,8 @@ const seedDB = async () => {
     });
 
     // Create wallets for each user
-    const wallet1 = await Wallet.create({ balance: 1000, UserId: user1.id });
-    const wallet2 = await Wallet.create({ balance: 500, UserId: user2.id });
+    const wallet1 = await Wallet.create({ balance: 4872.55, UserId: user1.id });
+    const wallet2 = await Wallet.create({ balance: 1657.42, UserId: user2.id });
 
     // Generate transactions (Alice sends to Bob, Bob sends to Alice)
     const transactions = [
@@ -67,6 +67,46 @@ const seedDB = async () => {
       {
         type: 'send',
         amount: 75,
+        status: 'completed',
+        senderId: user1.id,
+        receiverId: user2.id,
+        WalletId: wallet1.id,
+      },
+      {
+        type: 'send',
+        amount: 150,
+        status: 'completed',
+        senderId: user2.id,
+        receiverId: user1.id,
+        WalletId: wallet2.id,
+      },
+      {
+        type: 'send',
+        amount: 250,
+        status: 'completed',
+        senderId: user1.id,
+        receiverId: user2.id,
+        WalletId: wallet1.id,
+      },
+      {
+        type: 'request',
+        amount: 400,
+        status: 'pending',
+        senderId: user1.id,
+        receiverId: user2.id,
+        WalletId: wallet1.id,
+      },
+      {
+        type: 'send',
+        amount: 125,
+        status: 'completed',
+        senderId: user2.id,
+        receiverId: user1.id,
+        WalletId: wallet2.id,
+      },
+      {
+        type: 'send',
+        amount: 175,
         status: 'completed',
         senderId: user1.id,
         receiverId: user2.id,
