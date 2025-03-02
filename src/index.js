@@ -40,6 +40,10 @@ app.use(passport.session());
 require('./services/passport')(app);
 
 // Routes
+app.get('/', (req, res) => {
+  res.send('Welcome to the Wallet API!');
+});
+
 app.use('/user', require('./controllers/user'));
 app.use('/wallet', require('./controllers/wallet'));
 // app.use('/transactions', require('./controllers/transaction'));
