@@ -3,6 +3,7 @@ const passport = require('passport');
 const router = express.Router();
 const Transaction = require('../models/transaction');
 const { Op } = require('sequelize');
+const User = require('../models/user');
 
 router.get(
   '/',
@@ -41,6 +42,10 @@ router.get(
           id: req.params.id,
           [Op.or]: [{ senderId: req.user.id }, { receiverId: req.user.id }],
         },
+        include: [
+          { model: User, as: 'sender' },
+          { model: User, as: 'receiver' },
+        ],
       });
 
       if (!transaction)
