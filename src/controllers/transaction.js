@@ -9,13 +9,18 @@ router.get(
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     try {
+      const { limit = 10, offset = 0 } = req.query; // Default limit is 10, offset is 0
+
       const transactions = await Transaction.findAll({
         where: {
           [Op.or]: [{ senderId: req.user.id }, { receiverId: req.user.id }],
         },
+        limit: parseInt(limit), // Convert limit to a number
+        offset: parseInt(offset), // Convert offset to a number
+        order: [['createdAt', 'DESC']], // Optional: Order by creation date
       });
 
-      if (!transactions)
+      if (!transactions || transactions.length === 0)
         return res
           .status(404)
           .send({ ok: false, error: 'No transactions found.' });
