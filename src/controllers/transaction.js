@@ -60,4 +60,54 @@ router.get(
   }
 );
 
+router.post(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const { type, amount, receiverId } = req.body;
+
+      if (!type || !amount || !receiverId)
+        return res
+          .status(400)
+          .send({ ok: false, error: 'Missing required fields.' });
+
+      if (req.user.id === receiverId)
+        return res
+          .status(400)
+          .send({ ok: false, error: 'You cannot send money to yourself.' });
+
+      const sender = await User.findOne({ where: { id: req.user.id } });
+      const receiver = await User.findOne({ where: { id: receiverId } });
+
+      if (!sender || !receiver)
+        return res
+          .status(404)
+          .send({ ok: false, error: 'Sender or receiver not found.' });
+
+      if (sender.wallet.balance < amount)
+        return res
+          .status(400)
+          .send({ ok: false, error: 'Insufficient balance.' });
+
+      const transaction = await Transaction.create({
+        type,
+        amount,
+        senderId: req.user.id,
+        // receiverId,
+      });
+
+      sender.wallet.balance -= amount;
+      receiver.wallet.balance += amount;
+
+      await sender.wallet.save();
+      await receiver.wallet.save();
+
+      res.status(201).send({ ok: true, data: transaction });
+    } catch (err) {
+      res.status(500).send({ ok: false, error: err.message });
+    }
+  }
+);
+
 module.exports = router;
