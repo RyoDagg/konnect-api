@@ -27,4 +27,28 @@ router.get(
   }
 );
 
+router.get(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const transaction = await Transaction.findOne({
+        where: {
+          id: req.params.id,
+          [Op.or]: [{ senderId: req.user.id }, { receiverId: req.user.id }],
+        },
+      });
+
+      if (!transaction)
+        return res
+          .status(404)
+          .send({ ok: false, error: 'Transaction not found.' });
+
+      res.status(200).send({ ok: true, data: transaction });
+    } catch (err) {
+      res.status(500).send({ ok: false, error: err.message });
+    }
+  }
+);
+
 module.exports = router;
