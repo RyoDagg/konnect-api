@@ -16,6 +16,6 @@ const Wallet = sequelize.define(
 );
 
 Wallet.belongsTo(User);
-User.hasOne(Wallet);
+User.hasOne(Wallet, { foreignKey: 'UserId', as: 'wallet' });
 
 module.exports = Wallet;

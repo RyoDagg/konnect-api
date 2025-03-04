@@ -4,6 +4,7 @@ const router = express.Router();
 const Transaction = require('../models/transaction');
 const { Op } = require('sequelize');
 const User = require('../models/user');
+const Wallet = require('../models/wallet');
 
 router.get(
   '/',
@@ -78,13 +79,15 @@ router.post(
           .status(400)
           .send({ ok: false, error: 'You cannot send money to yourself.' });
 
-      const sender = await User.findOne({ where: { id: req.user.id } });
-      const receiver = await User.findOne({ where: { id: receiverId } });
+      const sender = await User.findOne({
+        where: { id: req.user.id },
+        include: [{ model: Wallet, as: 'wallet' }],
+      });
 
-      if (!sender || !receiver)
-        return res
-          .status(404)
-          .send({ ok: false, error: 'Sender or receiver not found.' });
+      // const receiver = await User.findOne({ where: { id: receiverId } });
+
+      if (!sender)
+        return res.status(404).send({ ok: false, error: 'Sender  not found.' });
 
       if (sender.wallet.balance < amount)
         return res
@@ -94,15 +97,16 @@ router.post(
       const transaction = await Transaction.create({
         type,
         amount,
+        status: type === 'send' ? 'completed' : 'pending',
         senderId: req.user.id,
         // receiverId,
       });
 
       sender.wallet.balance -= amount;
-      receiver.wallet.balance += amount;
+      // receiver.wallet.balance += amount;
 
       await sender.wallet.save();
-      await receiver.wallet.save();
+      // await receiver.wallet.save();
 
       res.status(201).send({ ok: true, data: transaction });
     } catch (err) {
