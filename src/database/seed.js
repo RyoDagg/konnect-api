@@ -32,7 +32,13 @@ const seedDB = async () => {
 
     // Generate transactions (Alice sends to Bob, Bob sends to Alice)
     const transactions = [];
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 50; i++) {
+      const randomDate = new Date(
+        new Date(2023, 0, 1).getTime() +
+          Math.random() *
+            (new Date(2025, 2, 3).getTime() - new Date(2023, 0, 1).getTime())
+      );
+
       transactions.push({
         type: i % 2 === 0 ? 'send' : 'request',
         amount: Math.floor(Math.random() * 500) + 1,
@@ -40,6 +46,7 @@ const seedDB = async () => {
         senderId: i % 2 === 0 ? user1.id : user2.id,
         receiverId: i % 2 === 0 ? user2.id : user1.id,
         WalletId: i % 2 === 0 ? wallet1.id : wallet2.id,
+        createdAt: randomDate,
       });
     }
 
