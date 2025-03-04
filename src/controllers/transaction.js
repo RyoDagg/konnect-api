@@ -102,8 +102,10 @@ router.post(
         // receiverId,
       });
 
-      sender.wallet.balance -= amount;
-      // receiver.wallet.balance += amount;
+      if (type === 'send') {
+        sender.wallet.balance -= amount;
+        // receiver.wallet.balance += amount;
+      }
 
       await sender.wallet.save();
       // await receiver.wallet.save();
