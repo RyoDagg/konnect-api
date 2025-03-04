@@ -18,6 +18,7 @@ router.get(
         },
         limit: parseInt(limit), // Convert limit to a number
         offset: parseInt(offset), // Convert offset to a number
+        sort: [['createdAt', 'DESC']],
       });
 
       if (!transactions || transactions.length === 0)
